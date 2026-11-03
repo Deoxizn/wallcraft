@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.4](https://github.com/Deoxizn/omawall) (2026-11-03, fork)
+
+### Bug Fixes
+
+* The background service loads again after Omarchy removed
+  `ScreenMoveRemap` on 2026-11-01, when Hyprland 0.57 started moving
+  layer surfaces with their monitor. The leftover reference made the
+  whole service fail with "ScreenMoveRemap is not a type", so no
+  wallpaper was drawn on either display and the panel reported no
+  outputs. The guard is gone, matching the built-in background service.
+
 ## [1.4.3](https://github.com/Deoxizn/omawall) (2026-10-29, fork)
 
 ### Bug Fixes

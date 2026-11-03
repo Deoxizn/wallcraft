@@ -1121,13 +1121,10 @@ Item {
       readonly property string scaling: root.configFor(screenKey).scaling
 
       screen: modelData
-      visible: !remapGuard.remapping
       anchors { top: true; bottom: true; left: true; right: true }
 
-      ScreenMoveRemap {
-        id: remapGuard
-        window: panel
-      }
+      // Hyprland 0.57 moves layer surfaces along with their monitor, so no
+      // remap guard is needed; ScreenMoveRemap no longer exists in the shell.
       // Zoom covers the screen, so it keeps the transparency it always had.
       // The fitting modes deliberately do not cover it, and the bars they
       // leave should read as part of the theme rather than as a hole.

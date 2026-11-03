@@ -4,7 +4,7 @@ Folder-backed wallpapers for [Omarchy](https://omarchy.org) Quattro. Every
 display gets its own image, its own settings if you want them, and your whole
 desktop theme can follow along.
 
-> **Fork note (Deoxizn/omawall, v1.4.3).** Fork of
+> **Fork note (Deoxizn/omawall, v1.4.4).** Fork of
 > [matjam/omawall](https://github.com/matjam/omawall), changed so Browse and
 > the Single-image picker work without zenity, Nautilus, or any particular
 > file manager — including on an Omarchy setup whose file manager is Strata.
@@ -12,6 +12,10 @@ desktop theme can follow along.
 > the upstream plugin carry over instead of resetting.
 >
 > Fixes in this fork:
+> - **Works with the 2026-11-01 shell update.** The service no longer
+>   references `ScreenMoveRemap`, which Omarchy removed when Hyprland
+>   0.57 started moving layer surfaces with their monitor. Before this,
+>   the service failed to load and no wallpaper was drawn at all.
 > - **Browse…** opens a built-in folder browser in the panel, every time.
 >   No zenity, no portal, no file manager: on a system where zenity's
 >   dialog is routed through Strata's portal, the old zenity-first attempt
