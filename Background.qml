@@ -28,6 +28,13 @@ Item {
   property var shell: null
   property var manifest: null
 
+  // Suspended by owed (Omarchy's wallpaper engine) when it hands the
+  // background to its own renderer for a video/GIF. Without this property
+  // and the setSuspended IPC below, owed's call fails and it falls back to
+  // force-enabling omarchy.background, which restores the stock plugin and
+  // disables this clone on every boot.
+  property bool suspended: false
+
   readonly property string home: Quickshell.env("HOME")
   readonly property string stateHome: home + "/.local/state"
   readonly property string currentBackgroundLink: stateHome + "/omarchy/current/background"
@@ -960,6 +967,10 @@ Item {
       root.setBackground(path, true)
     }
 
+    function setSuspended(value: string): void {
+      root.suspended = value === "true"
+    }
+
     function transition(fromPath: string, path: string): void {
       if (root.hasFolder()) { root.shuffle(false); return }
       root.applyGlobal(fromPath, path, path, false, false)
@@ -1122,6 +1133,7 @@ Item {
 
       screen: modelData
       anchors { top: true; bottom: true; left: true; right: true }
+      visible: !root.suspended
 
       // Hyprland 0.57 moves layer surfaces along with their monitor, so no
       // remap guard is needed; ScreenMoveRemap no longer exists in the shell.
