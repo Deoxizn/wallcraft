@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "matjam.omawall",
-  "name": "omawall",
-  "version": "1.4.5",
-  "author": "Nathan Ollerenshaw (matjam)",
+  "id": "devi.wallcraft",
+  "name": "wallcraft",
+  "version": "1.0",
+  "author": "Deoxizn",
   "description": "Replaces the Omarchy background service with a folder-backed one. Each display can have its own folder, shuffle through it or stay pinned to one image, and scale it to taste. Can also generate an Omarchy theme from the primary display's wallpaper, so the whole desktop tracks the picture behind it.",
   "license": "MIT",
-  "homepage": "https://github.com/Deoxizn/omawall",
-  "repository": "https://github.com/Deoxizn/omawall",
+  "homepage": "https://github.com/Deoxizn/wallcraft",
+  "repository": "https://github.com/Deoxizn/wallcraft",
   "kinds": [
     "service",
     "bar-widget"
@@ -84,7 +84,7 @@
         "type": "boolean",
         "label": "Generate theme from wallpaper",
         "defaultValue": false,
-        "description": "Build an 'omawall' Omarchy theme from the primary display's wallpaper. Requires matugen."
+        "description": "Build an 'wallcraft' Omarchy theme from the primary display's wallpaper. Requires matugen."
       },
       {
         "key": "themeMode",

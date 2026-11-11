@@ -16,8 +16,8 @@ import qs.Ui
 // the wallpaper without a restart.
 Panel {
   id: root
-  moduleName: "matjam.omawall"
-  ipcTarget: "matjam.omawall"
+  moduleName: "devi.wallcraft"
+  ipcTarget: "devi.wallcraft"
   manageIpc: false
 
   implicitWidth: button.implicitWidth
@@ -326,7 +326,7 @@ Panel {
     return out
   }
 
-  readonly property string previewTitle: "omawall" + (version === "" ? "" : " v" + version)
+  readonly property string previewTitle: "wallcraft" + (version === "" ? "" : " v" + version)
 
   // Only when there is nothing to list; otherwise the images speak for
   // themselves.
@@ -375,7 +375,7 @@ Panel {
   Process {
     id: saveProc
     onExited: function(code, status) {
-      if (code !== 0) console.warn("omawall: failed to save setting (exit " + code + ")")
+      if (code !== 0) console.warn("wallcraft: failed to save setting (exit " + code + ")")
       root.drainSaves()
       if (!root._saveQueue.length) refreshTimer.restart()
     }
@@ -553,7 +553,7 @@ Panel {
 
   // The bar is instantiated once per screen, so on a multi-monitor setup this
   // registers twice and Quickshell logs "another handler is registered for
-  // target matjam.omawall". First one wins, the panel still opens, and the
+  // target devi.wallcraft". First one wins, the panel still opens, and the
   // stock omarchy.power / omarchy.dropbox widgets emit the same warning — it
   // is the house pattern, not a fault here.
   IpcHandler {
@@ -1260,7 +1260,7 @@ Panel {
           Toggle {
             width: parent.width
             label: "Generate theme from wallpaper"
-            description: "Build an 'omawall' theme from the primary display's image and switch to it."
+            description: "Build an 'wallcraft' theme from the primary display's image and switch to it."
             checked: root.autoTheme
             foreground: root.fg
             fontFamily: root.fontFamily

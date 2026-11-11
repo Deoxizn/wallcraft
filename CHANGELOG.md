@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0](https://github.com/Deoxizn/wallcraft) (2026-11-11)
+
+### Features
+
+* Renamed from `matjam.omawall` to `devi.wallcraft` and restarted versioning at 1.0, so the upstream id stays free for matjam if he returns. The generated theme is now named `wallcraft`, and the theme generator runs through bash so the rename survives the GitHub connector's mode-644 pushes. Settings saved under the old id do not carry over; re-pin wallpapers after reinstalling.
+
 ## [1.4.4](https://github.com/Deoxizn/omawall) (2026-11-03, fork)
 
 ### Bug Fixes

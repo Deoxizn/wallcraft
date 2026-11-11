@@ -41,7 +41,7 @@ Item {
 
   // ------------------------------------------------------------- settings
 
-  readonly property string pluginId: (manifest && manifest.id) || "matjam.omawall"
+  readonly property string pluginId: (manifest && manifest.id) || "devi.wallcraft"
   readonly property var settings: shellSettings.settings
 
   ShellSettings {
@@ -169,7 +169,7 @@ Item {
     id: localPath
   }
 
-  readonly property string themeGenerator: localPath.fromUrl(Qt.resolvedUrl("bin/omawall-generate-theme"))
+  readonly property string themeGenerator: localPath.fromUrl(Qt.resolvedUrl("bin/wallcraft-generate-theme"))
   // For the paths that still speak of a single folder -- the status IPC and
   // the bar tooltip. The primary display's is the one a single-folder setup
   // has anyway.
@@ -182,7 +182,7 @@ Item {
   // the pre-change value. hasFolder() reads the settings directly.
   readonly property bool folderMode: hasFolder()
 
-  // True when omawall owns the wallpaper on any display, whether that display
+  // True when wallcraft owns the wallpaper on any display, whether that display
   // shuffles a folder or is pinned to one image.
   function hasFolder() {
     var names = screenNames()
@@ -605,7 +605,7 @@ Item {
     next[path] = true
     badImages = next
     dropFromQueue(path)
-    console.warn("omawall: skipping image that could not be decoded: " + path)
+    console.warn("wallcraft: skipping image that could not be decoded: " + path)
     replaceBadImage(path)
   }
 
@@ -707,7 +707,9 @@ Item {
     // image rather than a backlog of runs against stale ones.
     if (themeProc.running) { themeDebounce.restart(); return }
     themedFrom = image
-    themeProc.command = [themeGenerator,
+    // Run through bash: files pushed via the GitHub connector land mode 644,
+    // so a direct exec would fail to start.
+    themeProc.command = ["bash", themeGenerator,
       "--image", image, "--mode", themeMode]
     themeProc.running = true
   }

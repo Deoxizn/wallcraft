@@ -3,7 +3,7 @@
   "packages": {
     ".": {
       "release-type": "simple",
-      "package-name": "omawall",
+      "package-name": "wallcraft",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         {

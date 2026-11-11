@@ -1,17 +1,23 @@
-# omawall
+# wallcraft
 
 Folder-backed wallpapers for [Omarchy](https://omarchy.org) Quattro. Every
 display gets its own image, its own settings if you want them, and your whole
 desktop theme can follow along.
 
-> **Fork note (Deoxizn/omawall, v1.4.4).** Fork of
-> [matjam/omawall](https://github.com/matjam/omawall), changed so Browse and
-> the Single-image picker work without zenity, Nautilus, or any particular
-> file manager — including on an Omarchy setup whose file manager is Strata.
-> The plugin id is deliberately still `matjam.omawall`, so settings saved by
-> the upstream plugin carry over instead of resetting.
+> **Fork note (Deoxizn/wallcraft, v1.0).** Fork of
+> [matjam/omawall](https://github.com/matjam/omawall), renamed to
+> `devi.wallcraft` so the upstream id stays free for matjam. Changed so
+> Browse and the Single-image picker work without zenity, Nautilus, or any
+> particular file manager — including on an Omarchy setup whose file manager
+> is Strata. The plugin id changed with the rename, so settings saved under
+> `matjam.omawall` do not carry over: re-pin your wallpapers after installing.
 >
 > Fixes in this fork:
+> - **The background stays put on boot.** `owed`, Omarchy's wallpaper
+>   engine daemon, calls `background setSuspended false` on start and falls
+>   back to force-enabling the stock background when that fails. This fork
+>   implements `setSuspended`, so owed no longer restores
+>   `omarchy.background` and disables the plugin on every reboot.
 > - **Works with the 2026-11-01 shell update.** The service no longer
 >   references `ScreenMoveRemap`, which Omarchy removed when Hyprland
 >   0.57 started moving layer surfaces with their monitor. Before this,
@@ -41,7 +47,7 @@ desktop theme can follow along.
 > process, with your permissions. Read the source first. No promises about
 > your cat.
 
-![omawall](preview.png)
+![wallcraft](preview.png)
 
 ## Features
 
@@ -65,15 +71,15 @@ install it and decide later.
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/Deoxizn/omawall.git --enable
+omarchy plugin add https://github.com/Deoxizn/wallcraft.git --enable
 ```
 
 Put the widget on the `right` when prompted. This disables the built-in
 `omarchy.background` — they would fight over the wallpaper — and removing
-omawall restores it.
+wallcraft restores it.
 
 **Theme generation needs [matugen](https://github.com/InioX/matugen), which
-omawall does not install for you:**
+wallcraft does not install for you:**
 
 ```bash
 sudo pacman -S matugen    # Arch extra repo, no AUR helper needed
@@ -83,8 +89,8 @@ Everything else works without it, and the panel tells you when it's missing.
 Add it whenever; nothing needs reinstalling.
 
 ```bash
-omarchy plugin update matjam.omawall    # update (id is unchanged in this fork)
-omarchy plugin remove matjam.omawall    # remove, leaves nothing behind
+omarchy plugin update devi.wallcraft    # update
+omarchy plugin remove devi.wallcraft    # remove, leaves nothing behind
 ```
 
 ## Settings
@@ -153,7 +159,7 @@ bind = SUPER SHIFT, W, exec, omarchy-shell -q background next
 ## Theme from wallpaper
 
 Derives a palette from the primary display's image, writes
-`~/.config/omarchy/themes/omawall/colors.toml`, and applies it — bar,
+`~/.config/omarchy/themes/wallcraft/colors.toml`, and applies it — bar,
 terminals, btop, neovim, browser, VS Code. Leave the toggle off and press `t`
 to do it by hand instead.
 
@@ -165,7 +171,7 @@ theme won't stick.
 **It stalls the session for a moment.** `omarchy-theme-set` retints every
 themed app, and the compositor stops accepting input while it does — the
 pointer freezes, and a held key can repeat. That's the cost of any Omarchy
-theme change; omawall just triggers it more often. So don't pair it with a
+theme change; wallcraft just triggers it more often. So don't pair it with a
 short interval. Either turn on **Shuffle on unlock or wake** and set the
 interval to `0`, or keep the interval and generate by hand. If you game,
 prefer neither.
@@ -182,12 +188,12 @@ a different lightness of the same hue — and a terminal needs red to be red.
 Each is synthesised instead, starting at its canonical hue, nudged up to 15°
 toward the image's hue, at a saturation taken from the image and clamped to a
 band so a near-grey wallpaper still gives colors you can tell apart. The
-mapping is [`bin/omawall-colors.jq`](bin/omawall-colors.jq).
+mapping is [`bin/wallcraft-colors.jq`](bin/wallcraft-colors.jq).
 
 Run the generator directly:
 
 ```bash
-bin/omawall-generate-theme --image ~/Pictures/wall.jpg --mode dark [--no-apply]
+bin/wallcraft-generate-theme --image ~/Pictures/wall.jpg --mode dark [--no-apply]
 ```
 
 </details>
@@ -198,7 +204,7 @@ Omarchy Quattro · no file-manager or dialog dependency for Browse in this
 fork (zenity is used when present, otherwise the built-in panel browser) ·
 `matugen` for theme generation only.
 
-matugen is GPL-2.0 and omawall is MIT; omawall only executes it as a separate
+matugen is GPL-2.0 and wallcraft is MIT; wallcraft only executes it as a separate
 process, so the licenses stay independent. No network access, and nothing is
 written outside `~/.config/omarchy`.
 

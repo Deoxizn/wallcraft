@@ -14,7 +14,7 @@ const lookupSettings = qmlFunction('ShellSettings.qml', 'lookupSettings');
 const fromUrl = qmlFunction('LocalPath.qml', 'fromUrl');
 const versionFor = qmlFunction('ServiceVersion.qml', 'versionFor');
 const expandHome = qmlFunction('BarWidget.qml', 'expandHome');
-const id = 'matjam.omawall';
+const id = 'devi.wallcraft';
 const entry = { id, folder: '/wallpapers', autoTheme: true };
 
 for (const section of ['left', 'center', 'centerBegin', 'centerEnd', 'right', 'tray']) {
