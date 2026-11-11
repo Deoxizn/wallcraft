@@ -4,44 +4,6 @@ Folder-backed wallpapers for [Omarchy](https://omarchy.org) Quattro. Every
 display gets its own image, its own settings if you want them, and your whole
 desktop theme can follow along.
 
-> **Fork note (Deoxizn/wallcraft, v1.0).** Fork of
-> [matjam/omawall](https://github.com/matjam/omawall), renamed to
-> `devi.wallcraft` so the upstream id stays free for matjam. Changed so
-> Browse and the Single-image picker work without zenity, Nautilus, or any
-> particular file manager — including on an Omarchy setup whose file manager
-> is Strata. The plugin id changed with the rename, so settings saved under
-> `matjam.omawall` do not carry over: re-pin your wallpapers after installing.
->
-> Fixes in this fork:
-> - **The background stays put on boot.** `owed`, Omarchy's wallpaper
->   engine daemon, calls `background setSuspended false` on start and falls
->   back to force-enabling the stock background when that fails. This fork
->   implements `setSuspended`, so owed no longer restores
->   `omarchy.background` and disables the plugin on every reboot.
-> - **Works with the 2026-11-01 shell update.** The service no longer
->   references `ScreenMoveRemap`, which Omarchy removed when Hyprland
->   0.57 started moving layer surfaces with their monitor. Before this,
->   the service failed to load and no wallpaper was drawn at all.
-> - **Browse…** opens a built-in folder browser in the panel, every time.
->   No zenity, no portal, no file manager: on a system where zenity's
->   dialog is routed through Strata's portal, the old zenity-first attempt
->   just opened Strata itself with no way to select a folder.
-> - **The service now sees settings wherever the widget sits.** Upstream
->   only looked in bar.layout left/center/right, so a widget in tray (or
->   centerEnd/centerBegin) was invisible to the service: the panel showed
->   the folder, the service reported "No images found in that folder".
-> - **Thumbnails** in Single mode now load for `~/…` folders (the widget
->   used to pass a literal `~` to `find`) and for filenames with spaces,
->   `#`, `%` and friends (thumbnails now use a proper file URL, as the
->   hover preview already did). The grid also loads when the panel opens
->   in Single mode, and says so when it finds nothing, instead of staying
->   blank.
-> - **Single actually pins.** Switching Shuffle → Single now saves the
->   image currently on screen as the pin, and there is a "Pin current
->   wallpaper" button when Single is on with no pin saved. Before, that
->   shuffle-then-single workflow saved nothing, so the next shell restart
->   dropped the image — that was the "resets every shell reset" bug.
-
 > **Written by Claude**, Anthropic's coding agent. Tested on real hardware, but
 > tested isn't proven — and Omarchy plugins run unsandboxed inside your shell
 > process, with your permissions. Read the source first. No promises about
@@ -73,6 +35,8 @@ install it and decide later.
 ```bash
 omarchy plugin add https://github.com/Deoxizn/wallcraft.git --enable
 ```
+
+Coming from the old `matjam.omawall` install: remove it first, then re-pin your wallpapers, settings saved under the old id do not carry over.
 
 Put the widget on the `right` when prompted. This disables the built-in
 `omarchy.background` — they would fight over the wallpaper — and removing
