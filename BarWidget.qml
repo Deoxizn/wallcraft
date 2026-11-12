@@ -1115,6 +1115,7 @@ Panel {
               id: picker
               anchors.fill: parent
               anchors.margins: Style.space(4)
+              anchors.rightMargin: Style.space(14)
               clip: true
               cellWidth: Math.floor((width - 1) / 3)
               cellHeight: Math.round(cellWidth * 9 / 16)
@@ -1157,6 +1158,57 @@ Panel {
                   cursorShape: Qt.PointingHandCursor
                   onClicked: root.persistDisplay("pinned", String(modelData))
                 }
+              }
+            }
+
+            // A visible scrollbar for the picker: with 200+ images the
+            // wheel-only grid gave no hint there was more below the fold.
+            // Shows only when the grid actually overflows, and drag/click
+            // jumps through it. Hand-rolled, same as the Nyxiri settings
+            // card, instead of pulling in QtQuick.Controls styling.
+            Item {
+              id: pickerScrollBar
+              anchors.right: parent.right
+              anchors.top: parent.top
+              anchors.bottom: parent.bottom
+              anchors.margins: Style.space(4)
+              width: Style.space(10)
+              visible: picker.contentHeight > picker.height
+
+              readonly property real thumbHeight: Math.max(Style.space(28), picker.height * picker.height / picker.contentHeight)
+              readonly property real thumbY: picker.contentHeight > picker.height
+                ? picker.contentY / (picker.contentHeight - picker.height) * (picker.height - thumbHeight)
+                : 0
+
+              function scrollTo(y) {
+                var maxY = picker.contentHeight - picker.height
+                var ratio = Math.max(0, Math.min(1, (y - thumbHeight / 2) / (picker.height - thumbHeight)))
+                picker.contentY = ratio * maxY
+              }
+
+              Rectangle {
+                anchors.fill: parent
+                anchors.leftMargin: Style.space(3)
+                anchors.rightMargin: Style.space(1)
+                color: root.fg
+                opacity: 0.10
+                radius: width / 2
+              }
+
+              Rectangle {
+                x: Style.space(3)
+                y: pickerScrollBar.thumbY
+                width: Style.space(6)
+                height: pickerScrollBar.thumbHeight
+                color: root.fg
+                opacity: 0.45
+                radius: width / 2
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                onPressed: function(mouse) { pickerScrollBar.scrollTo(mouse.y) }
+                onPositionChanged: function(mouse) { if (pressed) pickerScrollBar.scrollTo(mouse.y) }
               }
             }
           }

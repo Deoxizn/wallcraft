@@ -88,3 +88,10 @@ test('reads the version through the public service API', () => {
     return { manifest: { version: '1.4.0' } };
   } }, id), '1.4.0');
 });
+
+test('the wallpaper picker shows a scrollbar when the grid overflows', () => {
+  const widget = readFileSync(new URL('../BarWidget.qml', import.meta.url), 'utf8');
+  assert.match(widget, /id: pickerScrollBar/);
+  assert.match(widget, /visible: picker\.contentHeight > picker\.height/);
+  assert.match(widget, /onPressed: function\(mouse\) \{ pickerScrollBar\.scrollTo\(mouse\.y\) \}/);
+});
