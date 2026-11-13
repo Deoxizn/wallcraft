@@ -14,7 +14,7 @@ Item {
 
   ShellSettings {
     id: settings
-    pluginId: "devi.wallcraft"
+    pluginId: "pizza.dirty.wallcraft"
     configPath: root.configPath
   }
 
@@ -58,7 +58,7 @@ Item {
     if (finished || writer.running) return
     if (step === 0 && source() === "bar") {
       step = 1
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"service\"}]}' > '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"service\"}]}' > '" + configPath + "'")
     } else if (step === 1 && source() === "service") {
       step = 2
       write("printf '{' > '" + configPath + "'")
@@ -67,25 +67,25 @@ Item {
       write("rm -f '" + configPath + "'")
     } else if (step === 3 && loadFailed && source() === "service") {
       step = 4
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"atomic\"}]}' > '" + configPath + ".next' && mv '" + configPath + ".next' '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"atomic\"}]}' > '" + configPath + ".next' && mv '" + configPath + ".next' '" + configPath + "'")
     } else if (step === 4 && source() === "atomic") {
       step = 5
       write("rm -f '" + configPath + "'")
     } else if (step === 5 && loadFailed && source() === "atomic") {
       step = 6
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"recreated\"}]}' > '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"recreated\"}]}' > '" + configPath + "'")
     } else if (step === 6 && source() === "recreated") {
       step = 7
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"one\"}]}' > '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"one\"}]}' > '" + configPath + "'")
     } else if (step === 8 && source() === "two") {
       step = 9
       write("printf '%s' '{\"version\":1,\"plugins\":[]}' > '" + configPath + "'")
     } else if (step === 9 && source() === "") {
       step = 10
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"retained\"}]}' > '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"retained\"}]}' > '" + configPath + "'")
     } else if (step === 10 && source() === "retained") {
       step = 11
-      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"unreadable\"}]}' > '" + configPath + ".next' && chmod 000 '" + configPath + ".next' && mv '" + configPath + ".next' '" + configPath + "'")
+      write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"unreadable\"}]}' > '" + configPath + ".next' && chmod 000 '" + configPath + ".next' && mv '" + configPath + ".next' '" + configPath + "'")
     } else if (step === 11 && loadFailed) {
       if (source() !== "retained") {
         fail("settings changed after an unreadable replacement")
@@ -103,10 +103,10 @@ Item {
     shellStub.service = null
     shellStub.requestedModule = ""
     serviceVersion.shell = shellStub
-    serviceVersion.moduleName = "devi.wallcraft"
+    serviceVersion.moduleName = "pizza.dirty.wallcraft"
     if (serviceVersion.version !== "")
       { fail("service version was present before the service was available"); return false }
-    if (shellStub.requestedModule !== "devi.wallcraft")
+    if (shellStub.requestedModule !== "pizza.dirty.wallcraft")
       { fail("service version did not use shell.serviceFor"); return false }
     shellStub.service = { manifest: { version: "9.8.7" } }
     if (serviceVersion.version !== "9.8.7")
@@ -154,7 +154,7 @@ Item {
       if (settings.reading && root.step === 7 && !root.activeReadUpdateIssued) {
         root.activeReadUpdateIssued = true
         root.step = 8
-        root.write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"devi.wallcraft\",\"source\":\"two\"}]}' > '" + root.configPath + "'")
+        root.write("printf '%s' '{\"version\":1,\"plugins\":[{\"id\":\"pizza.dirty.wallcraft\",\"source\":\"two\"}]}' > '" + root.configPath + "'")
       }
     }
   }

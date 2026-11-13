@@ -41,7 +41,7 @@ Item {
 
   // ------------------------------------------------------------- settings
 
-  readonly property string pluginId: (manifest && manifest.id) || "devi.wallcraft"
+  readonly property string pluginId: (manifest && manifest.id) || "pizza.dirty.wallcraft"
   readonly property var settings: shellSettings.settings
 
   ShellSettings {

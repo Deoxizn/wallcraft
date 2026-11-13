@@ -5,7 +5,7 @@ repo_dir=$(cd -- "$(dirname -- "$0")/.." && pwd)
 test_home=$(mktemp -d)
 trap 'rm -rf "$test_home"' EXIT
 mkdir -p "$test_home/.config/omarchy"
-printf '%s' '{"version":1,"bar":{"layout":{"left":[{"id":"devi.wallcraft","source":"bar"}]}},"plugins":[{"id":"devi.wallcraft","source":"service"}]}' > "$test_home/.config/omarchy/shell.json"
+printf '%s' '{"version":1,"bar":{"layout":{"left":[{"id":"pizza.dirty.wallcraft","source":"bar"}]}},"plugins":[{"id":"pizza.dirty.wallcraft","source":"service"}]}' > "$test_home/.config/omarchy/shell.json"
 
 set +e
 WALLCRAFT_TEST_DIR="$test_home" QT_QPA_PLATFORM=offscreen timeout 20s qs --path "$repo_dir/CompatibilityFixture.qml" >"$test_home/qs.log" 2>&1

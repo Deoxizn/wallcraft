@@ -53,8 +53,8 @@ Everything else works without it, and the panel tells you when it's missing.
 Add it whenever; nothing needs reinstalling.
 
 ```bash
-omarchy plugin update devi.wallcraft    # update
-omarchy plugin remove devi.wallcraft    # remove, leaves nothing behind
+omarchy plugin update pizza.dirty.wallcraft    # update
+omarchy plugin remove pizza.dirty.wallcraft    # remove, leaves nothing behind
 ```
 
 ## Settings

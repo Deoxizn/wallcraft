@@ -14,7 +14,7 @@ const lookupSettings = qmlFunction('ShellSettings.qml', 'lookupSettings');
 const fromUrl = qmlFunction('LocalPath.qml', 'fromUrl');
 const versionFor = qmlFunction('ServiceVersion.qml', 'versionFor');
 const expandHome = qmlFunction('BarWidget.qml', 'expandHome');
-const id = 'devi.wallcraft';
+const id = 'pizza.dirty.wallcraft';
 const entry = { id, folder: '/wallpapers', autoTheme: true };
 
 for (const section of ['left', 'center', 'centerBegin', 'centerEnd', 'right', 'tray']) {
@@ -95,3 +95,8 @@ test('the wallpaper picker shows a scrollbar when the grid overflows', () => {
   assert.match(widget, /visible: picker\.contentHeight > picker\.height/);
   assert.match(widget, /onPressed: function\(mouse\) \{ pickerScrollBar\.scrollTo\(mouse\.y\) \}/);
 });
+
+test("the manifest id is pizza.dirty.wallcraft", () => {
+  const manifest = JSON.parse(readFileSync(new URL("../manifest.json", import.meta.url), "utf8"))
+  assert.equal(manifest.id, "pizza.dirty.wallcraft")
+})

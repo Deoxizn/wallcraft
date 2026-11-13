@@ -16,8 +16,8 @@ import qs.Ui
 // the wallpaper without a restart.
 Panel {
   id: root
-  moduleName: "devi.wallcraft"
-  ipcTarget: "devi.wallcraft"
+  moduleName: "pizza.dirty.wallcraft"
+  ipcTarget: "pizza.dirty.wallcraft"
   manageIpc: false
 
   implicitWidth: button.implicitWidth
@@ -553,7 +553,7 @@ Panel {
 
   // The bar is instantiated once per screen, so on a multi-monitor setup this
   // registers twice and Quickshell logs "another handler is registered for
-  // target devi.wallcraft". First one wins, the panel still opens, and the
+  // target pizza.dirty.wallcraft". First one wins, the panel still opens, and the
   // stock omarchy.power / omarchy.dropbox widgets emit the same warning — it
   // is the house pattern, not a fault here.
   IpcHandler {
