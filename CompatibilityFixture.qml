@@ -9,7 +9,7 @@ Item {
   property bool activeReadUpdateIssued: false
   property bool finished: false
   property string testDir: Quickshell.env("WALLCRAFT_TEST_DIR")
-  property string configPath: testDir + "/.config/omarchy/shell.json"
+  property string configPath: testDir + "/.config/hexciri/shell.json"
   property string resultPath: testDir + "/result"
 
   ShellSettings {
@@ -120,7 +120,7 @@ Item {
     if (wakeDescription.text !== "Change wallpaper on unlock or screensaver exit rather than on a timer.")
       { fail("wake description changed for ready wake sources"); return false }
     wakeDescription.wakeSourcesReady = false
-    if (wakeDescription.text !== "Unavailable with this Omarchy plugin API: unlock and screensaver events are not accessible.")
+    if (wakeDescription.text !== "Unavailable with this Hexciri plugin API: unlock and screensaver events are not accessible.")
       { fail("wake unavailable description changed"); return false }
     return true
   }

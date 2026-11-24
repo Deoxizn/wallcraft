@@ -367,7 +367,7 @@ Panel {
     if (saveProc.running || !_saveQueue.length) return
     var job = _saveQueue[0]
     _saveQueue = _saveQueue.slice(1)
-    saveProc.command = ["omarchy-shell", "shell", "setBarWidget",
+    saveProc.command = ["hexciri-shell", "shell", "setBarWidget",
       root.moduleName, String(job[0]), JSON.stringify(job[1]), "{}"]
     saveProc.running = true
   }
@@ -392,14 +392,14 @@ Panel {
     statusProc.running = true
   }
 
-  // No -q here: the omarchy-shell wrapper's quiet mode suppresses stdout
+  // No -q here: the hexciri-shell wrapper's quiet mode suppresses stdout
   // entirely, so the reply would arrive as an empty string and parse into a
   // poolSize of 0 — the panel would report "no images found" for a folder
   // that had just scanned hundreds. Quiet mode is only right for the
   // fire-and-forget calls below, whose output nobody reads.
   Process {
     id: statusProc
-    command: ["omarchy-shell", "background", "status"]
+    command: ["hexciri-shell", "background", "status"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
@@ -494,24 +494,24 @@ Panel {
 
   // Quickshell.execDetached with an argv array, NOT Util.execDetached: that
   // helper takes a command *string* and wraps it in `bash -lc`, so an array
-  // silently stringifies to "omarchy-shell,-q,background,next" and the button
+  // silently stringifies to "hexciri-shell,-q,background,next" and the button
   // does nothing.
   //
   // "next", not "shuffle": the pool is dealt from a queue that only reshuffles
   // once it empties, so this hands out the following image rather than
   // re-randomising what is left. It is a no-op when nothing shuffles.
   function nextImage() {
-    Quickshell.execDetached(["omarchy-shell", "-q", "background", "next"])
+    Quickshell.execDetached(["hexciri-shell", "-q", "background", "next"])
     refreshTimer.restart()
   }
 
   function rescanNow() {
-    Quickshell.execDetached(["omarchy-shell", "-q", "background", "rescan"])
+    Quickshell.execDetached(["hexciri-shell", "-q", "background", "rescan"])
     refreshTimer.restart()
   }
 
   function generateThemeNow() {
-    Quickshell.execDetached(["omarchy-shell", "-q", "background", "generateTheme"])
+    Quickshell.execDetached(["hexciri-shell", "-q", "background", "generateTheme"])
   }
 
   // The generator is useless without matugen, and its absence is the one
@@ -554,7 +554,7 @@ Panel {
   // The bar is instantiated once per screen, so on a multi-monitor setup this
   // registers twice and Quickshell logs "another handler is registered for
   // target pizza.dirty.wallcraft". First one wins, the panel still opens, and the
-  // stock omarchy.power / omarchy.dropbox widgets emit the same warning — it
+  // stock hexciri.power / hexciri.dropbox widgets emit the same warning — it
   // is the house pattern, not a fault here.
   IpcHandler {
     target: root.ipcTarget

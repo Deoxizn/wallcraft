@@ -17,7 +17,7 @@ FileView {
     }
   }
 
-  property string configPath: Quickshell.env("HOME") + "/.config/omarchy/shell.json"
+  property string configPath: Quickshell.env("HOME") + "/.config/hexciri/shell.json"
   path: configPath
   watchChanges: true
   printErrors: false

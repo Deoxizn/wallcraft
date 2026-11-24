@@ -4,7 +4,7 @@
   "name": "wallcraft",
   "version": "1.1.0",
   "author": "Deoxizn",
-  "description": "Replaces the Omarchy background service with a folder-backed one. Each display can have its own folder, shuffle through it or stay pinned to one image, and scale it to taste. Can also generate an Omarchy theme from the primary display's wallpaper, so the whole desktop tracks the picture behind it.",
+  "description": "Replaces the Hexciri background service with a folder-backed one. Each display can have its own folder, shuffle through it or stay pinned to one image, and scale it to taste. Can also generate a Hexciri theme from the primary display's wallpaper, so the whole desktop tracks the picture behind it.",
   "license": "MIT",
   "homepage": "https://github.com/Deoxizn/wallcraft",
   "repository": "https://github.com/Deoxizn/wallcraft",
@@ -18,7 +18,7 @@
   },
   "barWidget": {
     "displayName": "Wallpapers",
-    "description": "Give each display its own wallpaper folder, shuffle or pin an image, choose how it scales, and optionally recolor Omarchy to match.",
+    "description": "Give each display its own wallpaper folder, shuffle or pin an image, choose how it scales, and optionally recolor Hexciri to match.",
     "category": "Appearance",
     "allowMultiple": false,
     "defaultSection": "right",
@@ -84,7 +84,7 @@
         "type": "boolean",
         "label": "Generate theme from wallpaper",
         "defaultValue": false,
-        "description": "Build an 'wallcraft' Omarchy theme from the primary display's wallpaper. Requires matugen."
+        "description": "Build an 'wallcraft' Hexciri theme from the primary display's wallpaper. Requires matugen."
       },
       {
         "key": "themeMode",
@@ -110,6 +110,6 @@
     ]
   },
   "omarchy": {
-    "clonedFrom": "omarchy.background"
+    "clonedFrom": "hexciri.background"
   }
 }

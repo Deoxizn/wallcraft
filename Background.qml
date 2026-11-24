@@ -7,15 +7,15 @@ import QtQuick.Shapes
 import qs.Commons
 import qs.Ui
 
-// Cloned from omarchy.background and extended with folder mode.
+// Cloned from hexciri.background and extended with folder mode.
 //
 // With no folder configured this behaves exactly like the stock plugin: one
-// image for every display, driven by the ~/.local/state/omarchy/current/background
+// image for every display, driven by the ~/.local/state/hexciri/current/background
 // symlink and the theme-transition IPC.
 //
 // With a folder configured, the image pool comes from that folder instead and
 // every display is dealt its own random pick. Theme switches still apply their
-// color payload — only the image choice is taken over — so `omarchy theme set`
+// color payload — only the image choice is taken over — so `hexciri theme set`
 // keeps recoloring the bar correctly.
 //
 // All transition state is per-screen (keyed by screen name) in both modes; the
@@ -31,13 +31,13 @@ Item {
   // Suspended by owed (Omarchy's wallpaper engine) when it hands the
   // background to its own renderer for a video/GIF. Without this property
   // and the setSuspended IPC below, owed's call fails and it falls back to
-  // force-enabling omarchy.background, which restores the stock plugin and
+  // force-enabling hexciri.background, which restores the stock plugin and
   // disables this clone on every boot.
   property bool suspended: false
 
   readonly property string home: Quickshell.env("HOME")
   readonly property string stateHome: home + "/.local/state"
-  readonly property string currentBackgroundLink: stateHome + "/omarchy/current/background"
+  readonly property string currentBackgroundLink: stateHome + "/hexciri/current/background"
 
   // ------------------------------------------------------------- settings
 
@@ -657,7 +657,7 @@ Item {
     if (autoTheme) requestTheme(primaryPick(picks))
   }
 
-  // The lock screen and `omarchy theme bg current` both read the state
+  // The lock screen and `hexciri theme bg current` both read the state
   // symlink, so keep it pointed at something we are actually showing.
   function syncCurrentLink(picks) {
     var primary = primaryPick(picks)
@@ -719,7 +719,7 @@ Item {
   // ------------------------------------------------------------ wake shuffle
 
   // Shuffling on a timer is the wrong shape when autoTheme is on: applying a
-  // theme retints every app Omarchy themes, which stalls the compositor for a
+  // theme retints every app Hexciri themes, which stalls the compositor for a
   // moment. Mid-sentence or mid-game that reads as a freeze. Tying the shuffle
   // to unlock and screensaver dismissal instead puts the stall where the user
   // is already waiting to resume, and where a new wallpaper is what they
@@ -727,9 +727,9 @@ Item {
   //
   // These are bindings rather than one-shot lookups: services are created
   // lazily, and the shell reassigns its whole service map when one lands, so
-  // they re-evaluate as soon as omarchy.lock and omarchy.idle exist.
-  readonly property var lockService: (shell && shell.serviceFor) ? shell.serviceFor("omarchy.lock") : null
-  readonly property var idleService: (shell && shell.serviceFor) ? shell.serviceFor("omarchy.idle") : null
+  // they re-evaluate as soon as hexciri.lock and hexciri.idle exist.
+  readonly property var lockService: (shell && shell.serviceFor) ? shell.serviceFor("hexciri.lock") : null
+  readonly property var idleService: (shell && shell.serviceFor) ? shell.serviceFor("hexciri.idle") : null
 
   readonly property bool sessionLocked: lockService ? lockService.locked === true : false
   readonly property bool screensaverShowing: idleService ? Number(idleService.screensaverWindowCount) > 0 : false
@@ -933,13 +933,13 @@ Item {
 
   Process {
     id: bgSwitchProc
-    command: ["bash", "-c", "background=$(omarchy-theme-bg-switcher); [[ -n $background ]] && omarchy-theme-bg-set \"$background\""]
+    command: ["bash", "-c", "background=$(hexciri-theme-bg-switcher); [[ -n $background ]] && hexciri-theme-bg-set \"$background\""]
     onExited: root.refreshBackground()
   }
 
   Process {
     id: themeSwitchProc
-    command: ["bash", "-c", "theme=$(omarchy-theme-switcher); [[ -n $theme ]] && omarchy-theme-set \"$theme\" >/dev/null 2>&1 &"]
+    command: ["bash", "-c", "theme=$(hexciri-theme-switcher); [[ -n $theme ]] && hexciri-theme-set \"$theme\" >/dev/null 2>&1 &"]
     onExited: root.refreshBackground()
   }
 
@@ -1145,7 +1145,7 @@ Item {
       color: panel.scaling === "zoom" ? "transparent" : Color.background
       // Keep render updates enabled. The background layer has been observed to
       // lose its committed buffer while parked with updatesEnabled=false,
-      // leaving a black desktop until omarchy-shell is restarted.
+      // leaving a black desktop until hexciri-shell is restarted.
       updatesEnabled: true
 
       // Report readiness unconditionally — not gated on revealProgress, which
@@ -1159,7 +1159,7 @@ Item {
         })
       }
 
-      WlrLayershell.namespace: "omarchy-background"
+      WlrLayershell.namespace: "hexciri-background"
       WlrLayershell.layer: WlrLayer.Background
       WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
       exclusionMode: ExclusionMode.Ignore

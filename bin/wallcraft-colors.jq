@@ -1,14 +1,14 @@
-# Map a matugen palette onto Omarchy's colors.toml.
+# Map a matugen palette onto Hexciri's colors.toml.
 #
 # Input:  `matugen image <path> --json hex --mode <mode>` on stdin.
 # Args:   $mode = "dark" | "light"
-# Output: the 26 keys every Omarchy theme declares, as TOML.
+# Output: the 26 keys every Hexciri theme declares, as TOML.
 #
 # The two halves of the file do quite different jobs.
 #
 # The structural roles (backgrounds, foregrounds, accent, selection, muted) come
 # straight from matugen. Material You's surface tiers are already an ordered
-# ramp with contrast guarantees, which is exactly the shape Omarchy wants.
+# ramp with contrast guarantees, which is exactly the shape Hexciri wants.
 #
 # The eight ANSI hues cannot come from matugen. Material You harmonises a scheme
 # around a single seed hue, so its base16 output is a monochrome ramp -- every

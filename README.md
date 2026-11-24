@@ -1,11 +1,11 @@
 # wallcraft
 
-Folder-backed wallpapers for [Omarchy](https://omarchy.org) Quattro. Every
+Folder-backed wallpapers for Hexciri. Every
 display gets its own image, its own settings if you want them, and your whole
 desktop theme can follow along.
 
 > **Written by Claude**, Anthropic's coding agent. Tested on real hardware, but
-> tested isn't proven — and Omarchy plugins run unsandboxed inside your shell
+> tested isn't proven — and Hexciri plugins run unsandboxed inside your shell
 > process, with your permissions. Read the source first. No promises about
 > your cat.
 
@@ -23,7 +23,7 @@ desktop theme can follow along.
 - **Shuffle** on a timer, on unlock and screensaver exit, or by hand.
 - **Recursive scan** of `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.webp`.
 - **Skips files it can't decode** and re-deals that display.
-- **Theme from wallpaper** — recolors everything Omarchy themes. Needs matugen.
+- **Theme from wallpaper** — recolors everything Hexciri themes. Needs matugen.
 - **Bar widget** for all of it. Middle-click the icon for the next image;
   hover it to see thumbnails of what each display is about to get.
 
@@ -33,13 +33,14 @@ install it and decide later.
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/Deoxizn/wallcraft.git --enable
+git clone --branch nyx https://github.com/Deoxizn/wallcraft.git ~/.config/hexciri/plugins/pizza.dirty.wallcraft
+hexciri plugin enable pizza.dirty.wallcraft
 ```
 
 Coming from the old `matjam.omawall` install: remove it first, then re-pin your wallpapers, settings saved under the old id do not carry over.
 
 Put the widget on the `right` when prompted. This disables the built-in
-`omarchy.background` — they would fight over the wallpaper — and removing
+`hexciri.background` — they would fight over the wallpaper — and removing
 wallcraft restores it.
 
 **Theme generation needs [matugen](https://github.com/InioX/matugen), which
@@ -53,8 +54,8 @@ Everything else works without it, and the panel tells you when it's missing.
 Add it whenever; nothing needs reinstalling.
 
 ```bash
-omarchy plugin update pizza.dirty.wallcraft    # update
-omarchy plugin remove pizza.dirty.wallcraft    # remove, leaves nothing behind
+hexciri plugin update pizza.dirty.wallcraft    # update (pulls the nyx branch)
+hexciri plugin remove pizza.dirty.wallcraft    # remove, leaves nothing behind
 ```
 
 ## Settings
@@ -111,19 +112,19 @@ Keys while the panel is open: `n` next image · `r` rescan · `b` browse ·
 `t` generate theme
 
 ```bash
-omarchy-shell background next           # next image (shuffle is an alias)
-omarchy-shell background generateTheme  # rebuild the theme
-omarchy-shell background rescan         # re-read the folder
-omarchy-shell background status         # JSON state
+hexciri-shell background next           # next image (shuffle is an alias)
+hexciri-shell background generateTheme  # rebuild the theme
+hexciri-shell background rescan         # re-read the folder
+hexciri-shell background status         # JSON state
 
 # hyprland bind
-bind = SUPER SHIFT, W, exec, omarchy-shell -q background next
+bind = SUPER SHIFT, W, exec, hexciri-shell -q background next
 ```
 
 ## Theme from wallpaper
 
 Derives a palette from the primary display's image, writes
-`~/.config/omarchy/themes/wallcraft/colors.toml`, and applies it — bar,
+`~/.config/hexciri/themes/wallcraft/colors.toml`, and applies it — bar,
 terminals, btop, neovim, browser, VS Code. Leave the toggle off and press `t`
 to do it by hand instead.
 
@@ -132,9 +133,9 @@ Your wallpaper is never touched: the theme is applied with
 theme triggering another shuffle. While the toggle is on, switching to another
 theme won't stick.
 
-**It stalls the session for a moment.** `omarchy-theme-set` retints every
+**It stalls the session for a moment.** `hexciri-theme-set` retints every
 themed app, and the compositor stops accepting input while it does — the
-pointer freezes, and a held key can repeat. That's the cost of any Omarchy
+pointer freezes, and a held key can repeat. That's the cost of any Hexciri
 theme change; wallcraft just triggers it more often. So don't pair it with a
 short interval. Either turn on **Shuffle on unlock or wake** and set the
 interval to `0`, or keep the interval and generate by hand. If you game,
@@ -144,7 +145,7 @@ prefer neither.
 <summary><b>How the palette is built</b></summary>
 
 matugen supplies Material You tonal palettes. Its surface and on-surface tiers
-become Omarchy's background and foreground ramps, and its primary the accent.
+become Hexciri's background and foreground ramps, and its primary the accent.
 
 The eight ANSI colors can't come from matugen: Material harmonises a scheme
 around one seed hue, so its base16 output is a monochrome ramp — every "color"
@@ -164,17 +165,17 @@ bin/wallcraft-generate-theme --image ~/Pictures/wall.jpg --mode dark [--no-apply
 
 ## Requirements
 
-Omarchy Quattro · no file-manager or dialog dependency for Browse in this
+Hexciri 2.0 · no file-manager or dialog dependency for Browse in this
 fork (zenity is used when present, otherwise the built-in panel browser) ·
 `matugen` for theme generation only.
 
 matugen is GPL-2.0 and wallcraft is MIT; wallcraft only executes it as a separate
 process, so the licenses stay independent. No network access, and nothing is
-written outside `~/.config/omarchy`.
+written outside `~/.config/hexciri`.
 
 ## Credits
 
-Extends Omarchy's built-in `omarchy.background`
+Extends Hexciri's built-in `hexciri.background`
 ([basecamp/omarchy](https://github.com/basecamp/omarchy), MIT).
 
 MIT — see [LICENSE](LICENSE).
