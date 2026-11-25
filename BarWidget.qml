@@ -99,14 +99,11 @@ Panel {
   // instead of leaving pinned empty (which is why a shuffle-then-single
   // image vanished on the next shell restart: nothing had been saved).
   function currentShown() {
+    // Only this display's own pick: falling back to the first non-empty
+    // screen pinned another monitor's image onto this one (e.g. DP-4's
+    // wallpaper pinned to HDMI-A-2 when HDMI had no pick yet).
     var key = editingKey
     if (screenPicks && screenPicks[key]) return String(screenPicks[key])
-    if (screenPicks) {
-      for (var n in screenPicks) {
-        var p = String(screenPicks[n] || "")
-        if (p !== "") return p
-      }
-    }
     return ""
   }
 
@@ -119,13 +116,34 @@ Panel {
     return shown
   }
 
+  // Pending whole-object shadow, see persistDisplayChanges.
+  property var _pendingDisplayConfig: null
+
   // Writes the whole displayConfig back, because setBarWidget replaces a key
   // rather than merging into it. Seeding from the resolved config also folds
   // any legacy top-level settings into the new shape on the first edit, which
   // is the only migration this needs.
   function persistDisplay(key, value) {
+    var changes = ({})
+    changes[key] = value
+    persistDisplayChanges(changes)
+  }
+
+  // Atomic multi-key version of persistDisplay. Two sequential
+  // persistDisplay calls are NOT atomic: each builds its snapshot from the
+  // panel's last-known displayConfig, and saves land asynchronously, so the
+  // second snapshot is built before the first has landed and overwrites it.
+  // That is what made Single latch back to Shuffle: switching to Single
+  // saved mode=single, then pinCurrent() saved pinned=... from the stale
+  // pre-click snapshot (mode=shuffle), and the pin save overwrote the mode
+  // save. Once any display had a shown image to pin, every Single click was
+  // undone by its own follow-up save, on both monitors.
+  // The shadow keeps every queued edit: a later call builds on the pending
+  // snapshot instead of the stale settings, so mode+pinned land together.
+  // It clears once the settings catch up (onDisplayConfigChanged).
+  function persistDisplayChanges(changes) {
     var dc = ({})
-    var existing = displayConfig
+    var existing = _pendingDisplayConfig || displayConfig
     if (existing && typeof existing === "object") {
       for (var k in existing) {
         if (existing[k] && typeof existing[k] === "object") {
@@ -136,7 +154,8 @@ Panel {
       }
     }
     if (!dc[editingKey]) dc[editingKey] = configFor(editingKey)
-    dc[editingKey][key] = value
+    for (var key in changes) dc[editingKey][key] = changes[key]
+    _pendingDisplayConfig = JSON.parse(JSON.stringify(dc))
     persist("displayConfig", dc)
   }
 
@@ -234,7 +253,10 @@ Panel {
   // Guarded: both fire while the component is still being built, before the
   // `current` binding has produced anything to read.
   onEditingChanged: if (current && current.mode === "single") loadPicker()
-  onDisplayConfigChanged: if (current && current.mode === "single") loadPicker()
+  onDisplayConfigChanged: {
+    if (_pendingDisplayConfig && JSON.stringify(displayConfig) === JSON.stringify(_pendingDisplayConfig)) _pendingDisplayConfig = null
+    if (current && current.mode === "single") loadPicker()
+  }
 
   // Reported by the service, so the picker lists the outputs it will actually
   // choose between rather than the bar's own view of them.
@@ -1076,13 +1098,23 @@ Panel {
             fontFamily: root.fontFamily
             onChanged: function(v) {
               var mode = String(v).toLowerCase()
-              root.persistDisplay("mode", mode)
               if (mode === "single") {
                 // The shuffle-then-single workflow, made real: save the
                 // image on screen as the pin, so a shell restart restores
                 // it instead of dropping back to a fresh shuffle.
-                root.pinCurrent()
+                // One atomic save: mode and pinned together. Two sequential
+                // persistDisplay calls race (see persistDisplayChanges):
+                // the pin save was built from the stale pre-click snapshot
+                // and overwrote mode=single with mode=shuffle.
+                var changes = { mode: "single" }
+                if (String(root.current.folder || "").trim() !== "") {
+                  var shown = root.currentShown()
+                  if (shown !== "") changes.pinned = shown
+                }
+                root.persistDisplayChanges(changes)
                 root.loadPicker()
+              } else {
+                root.persistDisplay("mode", mode)
               }
             }
           }

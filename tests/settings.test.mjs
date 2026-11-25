@@ -100,3 +100,93 @@ test("the manifest id is pizza.dirty.wallcraft", () => {
   const manifest = JSON.parse(readFileSync(new URL("../manifest.json", import.meta.url), "utf8"))
   assert.equal(manifest.id, "pizza.dirty.wallcraft")
 })
+
+// --- per-monitor Single vs Shuffle (2026-11-24, Devi, dokoz) ---
+// Regression: switching a display to Single saved mode=single, then
+// pinCurrent() saved pinned=... from the stale pre-click snapshot
+// (mode=shuffle), and the pin save overwrote the mode save. Once any
+// display had a shown image to pin, every Single click was undone by its
+// own follow-up save, on both monitors. The fix is an atomic
+// persistDisplayChanges + a pending shadow, and currentShown() no longer
+// falls back to another display's image.
+function wallcraftContext(displayConfig, editingKey, screenPicks) {
+  const widget = readFileSync(new URL('../BarWidget.qml', import.meta.url), 'utf8');
+  const grab = (name) => {
+    const m = widget.match(new RegExp('  function ' + name + '\\([^]*?\\n  \\}'));
+    assert.ok(m, 'BarWidget.qml defines ' + name);
+    return m[0];
+  };
+  const shellJson = { displayConfig: JSON.parse(JSON.stringify(displayConfig)) };
+  const ctx = {
+    displayConfig: JSON.parse(JSON.stringify(displayConfig)),
+    editingKey,
+    screenPicks: JSON.parse(JSON.stringify(screenPicks || {})),
+    _pendingDisplayConfig: null,
+    _saveQueue: [],
+    configFor: (key) => {
+      const c = ctx.displayConfig[key] || ctx.displayConfig.all;
+      return c ? JSON.parse(JSON.stringify(c))
+        : { folder: '/home/devi/Pictures/wallpapers', recursive: true, mode: 'shuffle', pinned: '', scaling: 'zoom' };
+    },
+    persist: (key, value) => { ctx._saveQueue.push([key, JSON.parse(JSON.stringify(value))]); },
+    // Apply one queued save the way setBarWidget + settings propagation
+    // would: write shell.json, then hand the new displayConfig to the panel
+    // and clear the pending shadow when it matches (onDisplayConfigChanged).
+    applyNextSave: () => {
+      const job = ctx._saveQueue.shift();
+      assert.ok(job, 'a save should be queued');
+      shellJson[job[0]] = job[1];
+      ctx.displayConfig = JSON.parse(JSON.stringify(shellJson.displayConfig));
+      if (ctx._pendingDisplayConfig && JSON.stringify(ctx.displayConfig) === JSON.stringify(ctx._pendingDisplayConfig)) ctx._pendingDisplayConfig = null;
+    },
+    drainSaves: () => { while (ctx._saveQueue.length) ctx.applyNextSave(); },
+    shellJson,
+  };
+  const code = grab('persistDisplay') + '\n' + grab('persistDisplayChanges') + '\n' + grab('currentShown');
+  vm.createContext(ctx);
+  vm.runInContext(code, ctx);
+  return ctx;
+}
+
+test('Single survives its own pin save on HDMI while DP is Single', () => {
+  const ctx = wallcraftContext({
+    'DP-4': { folder: '/home/devi/Pictures/wallpapers', recursive: true, mode: 'single', pinned: '/home/devi/Pictures/wallpapers/dp.jpg', scaling: 'zoom' },
+  }, 'HDMI-A-2', { 'DP-4': '/home/devi/Pictures/wallpapers/dp.jpg', 'HDMI-A-2': '/home/devi/Pictures/wallpapers/hdmi.jpg' });
+  // The old mode onChanged did exactly these two sequential saves.
+  ctx.persistDisplay('mode', 'single');
+  ctx.persistDisplay('pinned', '/home/devi/Pictures/wallpapers/hdmi.jpg');
+  ctx.drainSaves();
+  assert.equal(ctx.shellJson.displayConfig['HDMI-A-2'].mode, 'single');
+  assert.equal(ctx.shellJson.displayConfig['HDMI-A-2'].pinned, '/home/devi/Pictures/wallpapers/hdmi.jpg');
+  assert.equal(ctx.shellJson.displayConfig['DP-4'].mode, 'single');
+});
+
+test('DP Shuffle and HDMI Single are independent', () => {
+  const ctx = wallcraftContext({
+    'DP-4': { folder: '/home/devi/Pictures/wallpapers', recursive: true, mode: 'single', pinned: '/home/devi/Pictures/wallpapers/dp.jpg', scaling: 'zoom' },
+    'HDMI-A-2': { folder: '/home/devi/Pictures/wallpapers', recursive: true, mode: 'single', pinned: '/home/devi/Pictures/wallpapers/hdmi.jpg', scaling: 'zoom' },
+  }, 'DP-4', {});
+  ctx.persistDisplay('mode', 'shuffle');
+  ctx.drainSaves();
+  assert.equal(ctx.shellJson.displayConfig['DP-4'].mode, 'shuffle');
+  ctx.editingKey = 'HDMI-A-2';
+  ctx.persistDisplayChanges({ mode: 'single', pinned: '/home/devi/Pictures/wallpapers/hdmi2.jpg' });
+  ctx.drainSaves();
+  assert.equal(ctx.shellJson.displayConfig['HDMI-A-2'].mode, 'single');
+  assert.equal(ctx.shellJson.displayConfig['DP-4'].mode, 'shuffle');
+});
+
+test('currentShown does not fall back to another display', () => {
+  const ctx = wallcraftContext({}, 'HDMI-A-2', { 'DP-4': '/home/devi/Pictures/wallpapers/dp.jpg' });
+  assert.equal(ctx.currentShown(), '');
+  ctx.editingKey = 'DP-4';
+  assert.equal(ctx.currentShown(), '/home/devi/Pictures/wallpapers/dp.jpg');
+});
+
+test('mode switch to Single is one atomic save, not mode then pin', () => {
+  const widget = readFileSync(new URL('../BarWidget.qml', import.meta.url), 'utf8');
+  assert.match(widget, /persistDisplayChanges\(changes\)/);
+  const modeBlock = widget.match(/value: root\.current\.mode === "single" \? "Single" : "Shuffle"[^]*?onChanged: function\(v\) \{[^]*?\n            \}/);
+  assert.ok(modeBlock, 'mode ButtonGroup onChanged exists');
+  assert.doesNotMatch(modeBlock[0], /pinCurrent\(\)/);
+});
